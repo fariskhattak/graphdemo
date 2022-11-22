@@ -1,0 +1,30 @@
+p 10 10
+
+c  This weighted undirected graph consists of 10 vertices
+c  and 10 edges. It consists of 3 components and it is a
+c  non-bipartite graph.
+c  city11.wdg
+
+c vertices
+n  	1  	Alexandria, LA
+n  	2  	Baton Rouge, LA
+n	3	Covington, LA
+n	4	Dallas, TX
+n 	5	El Paso, TX
+n  	6  	Franklin, NJ
+n	7	Gloucester Township, PA
+n	8	Hornell, NY
+n  	9  	Irvington, PA
+n   10  Johnston, RI
+
+c These are the weighted directed edges
+e	1	4	25
+e	1	5	58
+e	2	4	24
+e	2	5	71
+e	3	4	54
+e	3	5	146
+e	6	7	83
+e	6	8	105
+e	6	9	142
+e	8	9	105
