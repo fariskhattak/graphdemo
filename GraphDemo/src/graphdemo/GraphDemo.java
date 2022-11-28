@@ -380,8 +380,8 @@ public class GraphDemo {
         // implement this method.
         // S = dist
         // P = path
-        for (int i = 1; i < g.size(); i++) {
-            for (int j = 1; j < g.size(); j++) {
+        for (int i = 1; i <= g.size(); i++) {
+            for (int j = 1; j <= g.size(); j++) {
                 if (i == j) {
                     path[i - 1][j - 1] = j;
                     dist[i - 1][j - 1] = 0;
@@ -394,13 +394,13 @@ public class GraphDemo {
                 }
             }
         }
-        for (int i = 1; i < g.size(); i++) {
+        for (int i = 1; i <= g.size(); i++) {
             path[i - 1][i - 1] = i;
             dist[i - 1][i - 1] = 0;
         }
-        for (int k = 1; k < g.size(); k++) {
-            for (int i = 1; i < g.size(); i++) {
-                for (int j = 1; j < g.size(); j++) {
+        for (int k = 1; k <= g.size(); k++) {
+            for (int i = 1; i <= g.size(); i++) {
+                for (int j = 1; j <= g.size(); j++) {
                     if (dist[i - 1][j - 1] > dist[i - 1][k - 1] + dist[k - 1][j - 1] && dist[i - 1][k - 1] != INFINITY
                             && dist[k - 1][j - 1] != INFINITY) {
                         path[i - 1][j - 1] = path[i - 1][k - 1];
@@ -441,7 +441,7 @@ public class GraphDemo {
             throw new GraphException("Non-existent root in call to primMST()");
         int numVertices = (int) g.size();
         double[] dist = new double[numVertices];
-        boolean[] processed = new boolean[numVertices];
+        boolean[] processed = new boolean[numVertices + 1];
         for (i = 0; i < numVertices; i++) {
             dist[i] = INFINITY;
             parent[i] = -1;
@@ -482,23 +482,61 @@ public class GraphDemo {
 
         PriorityQueue<Node> pq = new PriorityQueue<>(cmp);
         int vCount = 0;
-        for (i = 1; i < g.size(); i++) {
-            pq.add(new Node(-1, i, INFINITY));
-        }
-        pq.add(new Node(-1, root, 0));
-        int[] msTree = new int[numVertices - 1];
+        int[] msTree = new int[numVertices];
         for (i = 0; i < msTree.length; i++) {
-            msTree[i] = -1;
+            msTree[i] = NIL;
         }
-        while (numVertices < g.size()) {
+
+        // put one node object for each vertex of the graph in the pq
+        for (i = 0; i < numVertices; i++) {
+            pq.add(new Node(NIL, i, INFINITY));
+        }
+        // add a node object for root to pq so root is added to the pq first
+        pq.add(new Node(NIL, root, 0));
+
+        // when all the vertices are added to the spanning tree/forest the
+        // algorithm terminates
+        while (vCount < numVertices) {
             Node u = pq.poll();
-            while (processed[u.id - 1] == true) {
+            while (processed[u.id] == true) {
                 u = pq.poll();
-                numVertices++;
-                msTree[u.id - 1] = u.parent;
+            }
+            vCount++;
+            msTree[u.id - 1] = u.parent;
+
+            // if this vertex is a root, its distance has to be 0 since it is the first
+            // vertex added to the tree
+            if (msTree[u.id - 1] == -1) {
+                u.key = 0;
+            }
+            dist[u.id] = u.key;
+            // update the weight of the spanning tree forest by the weight of the edge
+            // used to connect u to the tree
+            totalWeight += u.key;
+
+            // update all the neighbors of u that are not already in the tree
+            for (int v = 1; v < numVertices; v++) {
+                City c1 = new City(u.id);
+                City c2 = new City(v);
+                if (g.isEdge(c1, c2) && !processed[v]) {
+                    if (g.retrieveEdge(c1, c2) < dist[v]) {
+                        dist[v] = g.retrieveEdge(c1, c2);
+                        msTree[v - 1] = u.id;
+                        pq.add(new Node(u.id, v, dist[v]));
+                    }
+                } else if (g.isEdge(c2, c1) && !processed[v]) {
+                    if (g.retrieveEdge(c2, c1) < dist[v]) {
+                        dist[v] = g.retrieveEdge(c2, c1);
+                        msTree[v - 1] = u.id;
+                        pq.add(new Node(u.id, v, dist[v]));
+                    }
+                }
             }
         }
-        return 0;
+        for (i = 0; i < numVertices; i++) {
+            parent[i] = msTree[i];
+        }
+        return totalWeight;
     }
 
     /**
@@ -533,25 +571,16 @@ public class GraphDemo {
                 City endCity = new City(j);
                 /* if path between (i, j) + the index is not set, set to current component # */
                 if ((g.isPath(startCity, endCity) || g.isPath(endCity, startCity)) && components[j] == 0) {
-                    // System.out.printf("%d has a path to %d\n", startCity.getKey(),
-                    // endCity.getKey());
                     components[j] = count;
                 }
                 /* if path between (i, j) + the index is set, readjust to current component # */
                 else if ((g.isPath(startCity, endCity) || g.isPath(endCity, startCity)) && components[j] != 0) {
-                    // System.out.printf("%d has a path to %d and c[j] != 0\n", startCity.getKey(),
-                    // endCity.getKey());
                     components[i] = components[j];
                     /* makes sure component # stays on track */
                     count = components[i];
                 }
             }
         }
-
-        // for (int i = 1; i < components.length; i++) {
-        // System.out.print(components[i] + " ");
-        // }
-        // System.out.println();
         return count;
 
     }

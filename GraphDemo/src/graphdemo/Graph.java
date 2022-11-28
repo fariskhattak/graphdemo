@@ -409,10 +409,6 @@ public class Graph<E extends Comparable<E>> implements GraphAPI<E> {
 
       /* verify that the source and destination vertex exists in the graph */
       if (!isVertex(fromKey) && !isVertex(toKey)) {
-         // City c1 = (City) fromKey;
-         // City c2 = (City) toKey;
-         // System.out.printf("isPath(): %d or %d is not a vertex.", c1.getKey(),
-         // c2.getKey());
          return false;
       }
       /* find the source vertex to start the traversal */
@@ -429,6 +425,7 @@ public class Graph<E extends Comparable<E>> implements GraphAPI<E> {
       Vertex toPtr;
       Edge edgeWalk;
       Vertex tmp;
+      /* reset walkPtr to the source vertex */
       walkPtr = src;
       stack.push(walkPtr);
       while (!stack.isEmpty()) {
@@ -456,27 +453,19 @@ public class Graph<E extends Comparable<E>> implements GraphAPI<E> {
    @Override
    public long countEdges() {
       // implement this method
-      long count = 0;
       long countOutDeg = 0;
       long countInDeg = 0;
-      boolean isDigraph = false;
       Vertex v = first;
       for (int i = 0; i < size(); i++) {
-         if (v.pNextVertex != null) {
-            v = v.pNextVertex;
-         }
          countOutDeg += v.outDeg;
          countInDeg += v.inDeg;
+         v = v.pNextVertex;
       }
       if (countOutDeg != countInDeg) {
-         isDigraph = true;
-      }
-      if (isDigraph) {
-         count = countOutDeg + countInDeg;
+         return countOutDeg + countInDeg;
       } else {
-         count = (countOutDeg + countInDeg) / 2;
+         return (countOutDeg + countInDeg) / 2;
       }
-      return count;
    }
 
    /*** ------------------ END AUGEMENTED METHOD ---------------- ***/

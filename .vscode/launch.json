@@ -1,0 +1,22 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Launch Current File",
+            "request": "launch",
+            "mainClass": "${file}",
+            "args": ["./GraphDemo/src/graphdemo/cities4.wug"]
+        },
+        {
+            "type": "java",
+            "name": "Launch GraphDemo",
+            "request": "launch",
+            "mainClass": "graphdemo.GraphDemo",
+            "projectName": "graphdemo_6615742a"
+        }
+    ]
+}
